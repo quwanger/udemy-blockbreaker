@@ -8,6 +8,11 @@ public class LevelManager : MonoBehaviour {
 	// To load levels manually using the inspector on button click
 	public void LoadLevel(string name){
 		Debug.Log ("New Level load: " + name);
+		// Reset teh breakable count and game start on every load.
+		// This makes sure the breakable count is counted on every scene load and
+		// the ball will stick to the paddle waiting for user input
+		Brick.breakableCount = 0;
+		Ball.hasStarted = false;
 		SceneManager.LoadScene(name);
 	}
 
@@ -21,6 +26,8 @@ public class LevelManager : MonoBehaviour {
 	// and increment by 1 provided it's ordered correctly in the build settings
 	public void LoadNextLevel()
 	{
+		Brick.breakableCount = 0;
+		Ball.hasStarted = false;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
 	}
 

@@ -8,7 +8,7 @@ public class Ball : MonoBehaviour {
 	// so we use a private variable of the class that we want to reference...
 	private Paddle paddle;
 
-	private bool hasStarted = false;
+	public static bool hasStarted = false;
 	private Vector3 paddleToBallVector;
 
 	void Start () {
@@ -18,7 +18,7 @@ public class Ball : MonoBehaviour {
 		// We use this vector to determine the correct position to lock the ball
 		// We subtract the paddles position to the balls position (since the ball is above the paddle)
 		// to determine the distance between their pivots
-		paddleToBallVector = this.transform.position - paddle.transform.position;
+		paddleToBallVector = this.transform.position - paddle.transform.position;		
 	}
 	
 	void Update () {
@@ -37,6 +37,18 @@ public class Ball : MonoBehaviour {
 				hasStarted = true;
 				this.GetComponent<Rigidbody2D>().velocity = new Vector2(2.0f, 10.0f);
 			}
+		}
+	}
+
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		Vector2 tweak = new Vector2(Random.Range(0.0f, 0.2f), Random.Range(0.0f, 0.2f));
+
+		print(tweak);
+
+		if (hasStarted)
+		{
+			this.GetComponent<Rigidbody2D>().velocity += tweak;
 		}
 	}
 }

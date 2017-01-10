@@ -9,6 +9,9 @@ public class Brick : MonoBehaviour {
 	public static int breakableCount = 0;
 	public Sprite[] hitSprites; // We load our different sprites in the inspector using an array
 
+	// Add our crack sound when a brick is hit
+	public AudioClip crack;
+
 	private LevelManager levelManager;
 	private int timesHit;
 	private bool isBreakable;
@@ -21,7 +24,6 @@ public class Brick : MonoBehaviour {
 		if (isBreakable)
 		{
 			breakableCount++;
-			print(breakableCount);
 		}
 
 		// Initialize the times this brick has been hit.
@@ -36,6 +38,11 @@ public class Brick : MonoBehaviour {
 	// On collision, call HandleHits()
 	private void OnCollisionEnter2D(Collision2D collision)
 	{
+		// On collision, play the sound at the position, the collision happened.
+		// Use this as apposed to Audio.Play because that method will not run if the brick is destroyed.
+		// Use camera's position for 2D games in Unity 5
+		AudioSource.PlayClipAtPoint(crack, Camera.main.transform.position, 0.8f);
+
 		if (isBreakable)
 		{
 			HandleHits();
@@ -54,6 +61,7 @@ public class Brick : MonoBehaviour {
 		if (timesHit >= maxHits)
 		{
 			breakableCount--;
+			Debug.Log(breakableCount);
 			levelManager.BrickDestroyed();
 			Destroy(gameObject);
 		}
@@ -75,6 +83,9 @@ public class Brick : MonoBehaviour {
 		if (hitSprites[spriteIndex])
 		{
 			this.GetComponent<SpriteRenderer>().sprite = hitSprites[spriteIndex];
+		} else
+		{
+			Debug.LogError("Sprite missing!");
 		}
 	}
 }
