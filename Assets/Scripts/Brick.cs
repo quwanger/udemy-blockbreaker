@@ -12,6 +12,9 @@ public class Brick : MonoBehaviour {
 	// Add our crack sound when a brick is hit
 	public AudioClip crack;
 
+	// Add our smoke prefab
+	public GameObject smoke;
+
 	private LevelManager levelManager;
 	private int timesHit;
 	private bool isBreakable;
@@ -63,6 +66,7 @@ public class Brick : MonoBehaviour {
 			breakableCount--;
 			Debug.Log(breakableCount);
 			levelManager.BrickDestroyed();
+			PuffSmoke();
 			Destroy(gameObject);
 		}
 		// If not then load the next sprite
@@ -70,6 +74,17 @@ public class Brick : MonoBehaviour {
 		{
 			LoadSprites();
 		}
+	}
+
+	void PuffSmoke()
+	{
+		// Create an instance of the smoke gameObject when the brick gets hit (particle effect)
+		// Instantiate returns as an Object, not a GameObject so we have to type cast it to the type we want
+		GameObject smokePuff = Instantiate(smoke, gameObject.transform.position, Quaternion.identity) as GameObject;
+
+		// particleSystem is deprecated. Use GetComponent<ParticleSystem>().main to access PS methods
+		var smokePuffMain = smokePuff.GetComponent<ParticleSystem>().main;
+		smokePuffMain.startColor = gameObject.GetComponent<SpriteRenderer>().color;
 	}
 
 	// Loads a sprite if there are still hits to be made to this brick
